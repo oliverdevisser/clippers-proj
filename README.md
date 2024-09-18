@@ -121,12 +121,12 @@ This will start two containers:
 web: The Flask web application container.
 db: The PostgreSQL database container.
 ```
-If everything is set up correctly, the web app will be available on http://localhost:5001 (or http://localhost:5001 todo check).
+If everything is set up correctly, the web app will be available on http://localhost:5001 (or http://localhost:5000 todo check).
 
 ### 2. Open the Web Application
    Open your web browser and go to:
 ```
-http://localhost:5000
+http://localhost:5001
 ```
 
 You should see the login page for the web application.
@@ -143,6 +143,12 @@ This will stop and remove the containers but keep the database volume intact.
 
 ## Troubleshooting
 Here are some common issues you might encounter and how to resolve them:
+
+### Starting container
+If the above commands aren't working, try the following instead (:
+```
+docker compose up -d
+```
 
 ### Database connection errors: 
 Ensure that the PostgreSQL database is running properly. You can check the logs with:
