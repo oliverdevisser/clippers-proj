@@ -42,7 +42,7 @@ dist/
 *.key
 
 # Ignore data files
-dev_test_data/
+#dev_test_data/
 
 # Ignore node modules if any
 node_modules/
