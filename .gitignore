@@ -1,0 +1,53 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment directories
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+clean_env/
+
+# macOS files
+.DS_Store
+
+# Docker files
+db_data/
+db/
+lac_fullstack_dev.db
+logfile
+
+# Docker artifacts
+*.log
+*.pid
+
+# SQLite databases
+*.db
+
+# Python egg files
+*.egg-info/
+
+# Build directories
+build/
+dist/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Secrets
+*.env
+*.key
+
+# Ignore data files
+dev_test_data/
+
+# Ignore node modules if any
+node_modules/
+
+# Ignore other unnecessary files
+*.tar.gz
+*.zip
+*.rar
