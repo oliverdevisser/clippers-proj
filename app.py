@@ -25,6 +25,15 @@ users = {
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
+if not DATABASE_URL:
+    DATABASE_HOST = os.environ.get('DATABASE_HOST', 'db')
+    DATABASE_PORT = os.environ.get('DATABASE_PORT', '5432')
+    DATABASE_NAME = os.environ.get('DATABASE_NAME', 'lac_fullstack_dev')
+    DATABASE_USER = os.environ.get('DATABASE_USER', 'postgres')
+    DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD', 'postgres')
+    DATABASE_URL = f'postgresql://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}'
+
+
 # Function to get a database connection
 def get_db_connection():
     conn = psycopg2.connect(DATABASE_URL)
@@ -212,27 +221,27 @@ def get_scout_schedule():
         # Calculate team records from game_schedule
         cur.execute("""
             WITH team_records AS (
-                SELECT team_id, team_name, SUM(wins) AS total_wins, SUM(losses) AS total_losses
+                SELECT team_id, team_nickname, SUM(wins) AS total_wins, SUM(losses) AS total_losses
                 FROM (
-                    SELECT gs.home_id AS team_id, ht.teamname AS team_name,
+                    SELECT gs.home_id AS team_id, ht.teamnickname AS team_nickname,
                         CASE WHEN gs.home_score > gs.away_score THEN 1 ELSE 0 END AS wins,
                         CASE WHEN gs.home_score < gs.away_score THEN 1 ELSE 0 END AS losses
                     FROM game_schedule gs
                     JOIN team ht ON gs.home_id = ht.teamid
                     UNION ALL
-                    SELECT gs.away_id AS team_id, at.teamname AS team_name,
+                    SELECT gs.away_id AS team_id, at.teamnickname AS team_nickname,
                         CASE WHEN gs.away_score > gs.home_score THEN 1 ELSE 0 END AS wins,
                         CASE WHEN gs.away_score < gs.home_score THEN 1 ELSE 0 END AS losses
                     FROM game_schedule gs
                     JOIN team at ON gs.away_id = at.teamid
                 ) sub
-                GROUP BY team_id, team_name
+                GROUP BY team_id, team_nickname
             )
             SELECT
                 gs.game_id,
                 gs.game_date,
-                ht.teamname AS home_team,
-                at.teamname AS away_team,
+                ht.teamnickname AS home_team,
+                at.teamnickname AS away_team,
                 (home_record.total_wins + away_record.total_wins) - (home_record.total_losses + away_record.total_losses) AS total_game_difficulty
             FROM game_schedule gs
             JOIN team ht ON gs.home_id = ht.teamid
@@ -242,10 +251,27 @@ def get_scout_schedule():
             ORDER BY gs.game_date;
         """)
 
+        difficulty_levels = [
+            (10, 'purple'),
+            (5, 'red'),
+            (0, '#d4af37'),
+            (-5, '#228b22'),
+            (-10, '#006400')
+        ]
+
         data = cur.fetchall()
         events = []
         for row in data:
             game_id, game_date, home_team, away_team, difficulty = row
+            # Determine color based on difficulty
+            # Determine color based on difficulty
+            for threshold, color in difficulty_levels:
+                if difficulty >= threshold:
+                    event_color = color
+                    break
+            else:
+                event_color = '#006400'  # Default color
+
             event = {
                 'title': f"{home_team} vs {away_team} (Diff: {difficulty})",
                 'start': game_date.isoformat(),
@@ -253,9 +279,11 @@ def get_scout_schedule():
                 'difficulty': difficulty,
                 'home_team': home_team,
                 'away_team': away_team,
-                'game_id': game_id
+                'game_id': game_id,
+                'color': event_color
             }
             events.append(event)
+
         cur.close()
         conn.close()
         return jsonify({'events': events})
@@ -264,15 +292,6 @@ def get_scout_schedule():
         return jsonify({'error': str(e)}), 500
 
 
-
-
-
-
-
-
-# app.py
-
-# app.py
 
 @app.route('/api/coach-schedule')
 def get_coach_schedule():
@@ -289,15 +308,25 @@ def get_coach_schedule():
         # Calculate team records from game_schedule
         cur.execute("""
             WITH team_records AS (
-                SELECT team_id, team_name, SUM(wins) AS total_wins, SUM(losses) AS total_losses
+                SELECT 
+                    team_id, 
+                    team_name, 
+                    SUM(wins) AS total_wins, 
+                    SUM(losses) AS total_losses
                 FROM (
-                    SELECT gs.home_id AS team_id, ht.teamname AS team_name,
+                    SELECT 
+                        gs.home_id AS team_id, 
+                        ht.teamname AS team_name,
                         CASE WHEN gs.home_score > gs.away_score THEN 1 ELSE 0 END AS wins,
                         CASE WHEN gs.home_score < gs.away_score THEN 1 ELSE 0 END AS losses
                     FROM game_schedule gs
                     JOIN team ht ON gs.home_id = ht.teamid
+                    
                     UNION ALL
-                    SELECT gs.away_id AS team_id, at.teamname AS team_name,
+                    
+                    SELECT 
+                        gs.away_id AS team_id, 
+                        at.teamname AS team_name,
                         CASE WHEN gs.away_score > gs.home_score THEN 1 ELSE 0 END AS wins,
                         CASE WHEN gs.away_score < gs.home_score THEN 1 ELSE 0 END AS losses
                     FROM game_schedule gs
@@ -308,8 +337,8 @@ def get_coach_schedule():
             SELECT
                 gs.game_id,
                 gs.game_date,
-                ht.teamname AS home_team,
-                at.teamname AS away_team,
+                ht.teamnickname AS home_team,
+                at.teamnickname AS away_team,
                 CASE
                     WHEN ht.teamname = %s THEN (away_record.total_wins - away_record.total_losses)
                     ELSE (home_record.total_wins - home_record.total_losses)
@@ -324,16 +353,28 @@ def get_coach_schedule():
         """, (team_name, team_name))
 
         data = cur.fetchall()
+        if not data:  # Check if data is empty
+            print(f"No data found for the given team name: {team_name}")
+
+        difficulty_levels = [
+            (5, 'purple'),
+            (2.5, 'red'),
+            (0, '#d4af37'),  # Darker Yellow
+            (-2.5, '#228b22'),  # Darker Green
+            (-5, '#006400')  # Dark Green
+        ]
+
         events = []
         for row in data:
             game_id, game_date, home_team, away_team, difficulty = row
+
             # Determine color based on difficulty
-            if difficulty >= 10:
-                color = 'red'
-            elif difficulty >= 5:
-                color = 'orange'
+            for threshold, color in difficulty_levels:
+                if difficulty >= threshold:
+                    event_color = color
+                    break
             else:
-                color = 'green'
+                event_color = '#006400'  # Default color
 
             event = {
                 'title': f"{home_team} vs {away_team} (Diff: {difficulty})",
@@ -343,7 +384,7 @@ def get_coach_schedule():
                 'home_team': home_team,
                 'away_team': away_team,
                 'game_id': game_id,
-                'color': color
+                'color': event_color
             }
             events.append(event)
 
@@ -353,10 +394,6 @@ def get_coach_schedule():
     except Exception as e:
         print(f"Error fetching coach schedule data: {e}")
         return jsonify({'error': str(e)}), 500
-
-
-
-
 
 
 

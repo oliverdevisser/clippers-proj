@@ -1,38 +1,170 @@
-/* Make the stint visualization container larger */
-#stintViz {
-    width: 100%;
-    height: 600px; /* Increased height for visualization */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px; /* Adds some space above the container */
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* General Styles for All Pages */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f5f5; /* Light gray background */
+    color: #333; /* Dark gray text color */
+    margin: 0;
+    padding: 20px;
 }
 
-/* Adjust the canvas size for the stint chart */
-canvas {
-    max-width: 1000px; /* Increased maximum width */
-    width: 90%; /* Makes the canvas wider */
-    height: 500px; /* Sets a taller fixed height for better visibility */
-    margin: 0 auto;
-}
-
-/* Make the calendar container smaller */
-#scheduleViz {
-    width: 80%; /* Reduces the width of the calendar container */
-    height: 400px; /* Reduces the height of the calendar */
-    margin: 0 auto; /* Centers the calendar container */
-    margin-top: 20px; /* Adds some space above the container */
-}
-
-#calendar {
-    max-width: 100%; /* Ensures the calendar does not exceed the container's width */
-    height: 150%; /* Makes the calendar fill the container height */
-}
-
-#teamSelect {
+/* Heading Styles */
+h1, h2, h3 {
+    text-align: center;
+    color: #333; /* Dark gray for headings */
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 
-h1 + p {
+h1 {
+    margin-bottom: 10px;
+}
+
+/* Paragraph Styles */
+p {
+    text-align: center;
     font-style: italic;
+    color: #555; /* Medium gray for text */
+}
+
+/* General Button Styles */
+button {
+    background-color: #3498db; /* Light blue button color */
+    color: #fff; /* White text */
+    border: none;
+    padding: 12px 20px;
+    margin: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2980b9; /* Darker blue on hover */
+}
+
+/* Logout Button Specific Styles */
+.logout-container {
+    margin-top: 20px;
+    text-align: left;
+    max-width: 1000px;
+    margin: 20px auto 0 auto;
+    clear: both; /* Ensure it appears below floated elements */
+}
+
+.logout-container button {
+    background-color: #e74c3c; /* Red color for logout */
+}
+
+.logout-container button:hover {
+    background-color: #c0392b; /* Darker red on hover */
+}
+
+/* Form Container and Styles */
+form {
+    text-align: center;
+    margin-top: 20px;
+}
+
+form div {
+    margin-bottom: 15px;
+    text-align: center; /* Center the form elements */
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-align: left; /* Keep labels left-aligned if desired */
+    width: 80%;
+    max-width: 300px;
+    margin: 0 auto 5px auto;
+}
+
+form input[type="text"], form input[type="password"] {
+    width: 80%; /* Adjust width as needed */
+    max-width: 300px;
+    padding: 10px;
+    margin: 5px auto;
+    display: block;
+    box-sizing: border-box;
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+form button {
+    width: 80%; /* Matches the width of input fields */
+    max-width: 300px;
+    padding: 12px 20px;
+    margin: 20px auto;
+    display: block;
+}
+
+
+/* Container for Visualization Buttons */
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* Space between buttons */
+}
+
+.button-container button {
+    flex: 1;
+    max-width: 300px;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+/* Calendar and Visualization Containers */
+#stintViz, #scheduleViz {
+    width: 90%; /* Makes the container wider */
+    max-width: 1200px; /* Sets a maximum width */
+    min-height: 600px; /* Set a minimum height instead of fixed height */
+    height: auto; /* Allow the container to adjust height based on content */
+    margin: 0 auto 40px auto; /* Adds space below the container */
+    margin-top: 20px; /* Adds space above the container */
+    background-color: #fff; /* White background for containers */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px; /* Adds padding inside the container */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+}
+
+/* Calendar inside the container */
+#calendar {
+    width: 100%; /* Ensures the calendar fills the container's width */
+    color: #333; /* Dark text color */
+}
+
+/* Team Select Dropdown */
+#teamSelect {
+    display: block;
+    margin: 0 auto;
+    padding: 10px;
+    width: 200px;
+    border-radius: 4px;
+    background-color: #f5f5f5; /* Light background for dropdown */
+    color: #333; /* Dark text color */
+    border: 1px solid #ddd; /* Light gray border */
+}
+
+/* Chart Canvas */
+canvas {
+    max-width: 100%;
+    height: auto;
+    background-color: #fff; /* White background for the chart */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for charts */
+}
+
+/* Additional Styling for Calendar Events */
+.fc-event {
+    font-size: 14px; /* Slightly smaller font for events */
+    padding: 5px; /* Padding inside event elements */
+    border-radius: 4px; /* Rounded corners for events */
+    color: #fff; /* White text color */
 }

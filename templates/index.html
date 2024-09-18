@@ -9,7 +9,7 @@
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css' rel='stylesheet' />
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="login-page">
     <h1>Welcome, {{ user }}</h1>
     {% if user == 'user_one' %}
         <p>{Performance Scout}</p>
@@ -29,7 +29,7 @@
 
     <!-- Buttons to select the type of visualization -->
     <h2>Select Visualization:</h2>
-    <div>
+    <div class="button-container">
         <button id="stintButton">Stint Visualization</button>
         <button id="scheduleButton">Schedule Visualization</button>
     </div>
@@ -43,6 +43,13 @@
     <div id="scheduleViz" style="display: none;">
         <h3>Game Schedule</h3>
         <div id="calendar"></div>
+    </div>
+
+    <!-- Logout button -->
+    <div class="logout-container">
+        <form action="/logout" method="post">
+            <button type="submit">Logout</button>
+        </form>
     </div>
 
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js'></script>
@@ -196,16 +203,6 @@
                         initialView: 'dayGridMonth',
                         initialDate: initialDate,
                         events: events,
-                        eventDidMount: function(info) {
-                            const difficulty = info.event.extendedProps.difficulty;
-                            if (difficulty >= 10) {
-                                info.el.style.backgroundColor = 'red';
-                            } else if (difficulty >= 5) {
-                                info.el.style.backgroundColor = 'orange';
-                            } else {
-                                info.el.style.backgroundColor = 'green';
-                            }
-                        },
                         eventClick: function(info) {
                             const event = info.event;
                             const details = `
@@ -264,9 +261,6 @@
 
     </script>
 
-    <!-- Logout button -->
-    <form action="/logout" method="post">
-        <button type="submit">Logout</button>
-    </form>
+    
 </body>
 </html>
