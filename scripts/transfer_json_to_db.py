@@ -1,8 +1,7 @@
 import os
 import pandas as pd
-from sqlalchemy import create_engine, text, MetaData, Table
+from sqlalchemy import create_engine, text
 from sqlalchemy.types import BigInteger, Integer, String, TIMESTAMP
-from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 def load_data_to_db():
     DATABASE_URI = os.environ.get('DATABASE_URL', 'postgresql://postgres:postgres@db:5432/lac_fullstack_dev')
@@ -21,7 +20,7 @@ def load_data_to_db():
         'roster.json': 'roster'
     }
 
-    # Define data types for each table
+    # Define data types for each table (unchanged)
     dtype_mapping = {
         'team': {
             'teamid': BigInteger(),
@@ -68,9 +67,6 @@ def load_data_to_db():
         }
     }
 
-    metadata = MetaData()
-    metadata.reflect(bind=engine)
-
     # Load JSON files and transfer to PostgreSQL
     for file_name, table_name in file_to_table.items():
         file_path = os.path.join(DATA_DIR, file_name)
@@ -85,24 +81,18 @@ def load_data_to_db():
             if table_name == 'game_schedule':
                 df['game_date'] = pd.to_datetime(df['game_date'])
 
-            # Get the table metadata
-            table = Table(table_name, metadata, autoload_with=engine)
-
-            # Convert DataFrame to list of dictionaries
-            records = df.to_dict(orient='records')
-
-            # Prepare the insert statement with ON CONFLICT DO NOTHING
-            stmt = pg_insert(table).values(records)
-            do_nothing_stmt = stmt.on_conflict_do_nothing()
-
-            # Execute the statement
+            # Delete existing data
             with engine.connect() as connection:
-                connection.execute(do_nothing_stmt)
-                connection.commit()
+                connection.execute(text(f"TRUNCATE TABLE {table_name} RESTART IDENTITY CASCADE;"))
 
+            # Write DataFrame to table
+            df.to_sql(table_name, con=engine, if_exists='append', index=False, dtype=dtype_mapping.get(table_name))
             print(f"Table '{table_name}' has been updated successfully.")
         except Exception as e:
             print(f"Failed to process {file_path}. Error: {e}")
 
 if __name__ == '__main__':
     load_data_to_db()
+
+
+
