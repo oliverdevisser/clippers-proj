@@ -121,7 +121,7 @@ This will start two containers:
 web: The Flask web application container.
 db: The PostgreSQL database container.
 ```
-If everything is set up correctly, the web app will be available on http://localhost:5000.
+If everything is set up correctly, the web app will be available on http://localhost:5001 (or http://localhost:5001 todo check).
 
 ### 2. Open the Web Application
    Open your web browser and go to:
