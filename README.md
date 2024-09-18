@@ -54,6 +54,7 @@ Before you begin, make sure you have the following installed on your machine:
 
 Here is an overview of the files and directories in this project:
 
+"""
 LAC_FSD_ODV/
 ├── __pycache__/          # Python bytecode cache (ignored in Docker)
 ├── clean_env/            # Clean virtual environment (optional, not used directly in Docker)
@@ -84,7 +85,7 @@ LAC_FSD_ODV/
 ├── Dockerfile            # Dockerfile to build the Flask web app image
 ├── README.md             # Project documentation (this file)
 └── requirements.txt      # Python dependencies for the Flask app
-
+"""
 
 ## Installation
 Follow these steps to get the project up and running:
