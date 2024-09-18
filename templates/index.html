@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lineup and Schedule Visualizations</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css' rel='stylesheet' />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Welcome, {{ user }}</h1>
+    {% if user == 'user_one' %}
+        <p>{Performance Scout}</p>
+    {% elif user == 'user_two' %}
+        <p>{Assistant Coach of {{ selected_team }}}</p>
+    {% endif %}
+
+    <!-- Dropdown menu for team selection (only for user_two) -->
+    {% if user == 'user_two' %}
+    <h3>Select Team:</h3>
+    <select id="teamSelect">
+        {% for team in teams %}
+            <option value="{{ team }}" {% if team == default_team %}selected{% endif %}>{{ team }}</option>
+        {% endfor %}
+    </select>
+    {% endif %}
+
+    <!-- Buttons to select the type of visualization -->
+    <h2>Select Visualization:</h2>
+    <div>
+        <button id="stintButton">Stint Visualization</button>
+        <button id="scheduleButton">Schedule Visualization</button>
+    </div>
+
+    <!-- Visualization Containers -->
+    <div id="stintViz" style="display: none;">
+        <h3>Player Stint Analysis</h3>
+        <canvas id="stintChart"></canvas>
+    </div>
+
+    <div id="scheduleViz" style="display: none;">
+        <h3>Game Schedule</h3>
+        <div id="calendar"></div>
+    </div>
+
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- JavaScript to handle chart rendering -->
+    <script>
+        const user = "{{ user }}";
+        const selectedTeam = "{{ default_team }}";
+
+        // Function to render stint visualization
+        function renderStintChart(team) {
+            let apiUrl = '/api/stint-data';
+            if (team) {
+                apiUrl += `?team=${encodeURIComponent(team)}`;
+            }
+            
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(responseData => {
+                    if (responseData.error) {
+                        alert(responseData.error);
+                        return;
+                    }
+
+                    const data = responseData.data;
+                    const columns = responseData.columns;
+
+                    const gamesIdx = columns.indexOf('games');
+                    const diffIdx = columns.indexOf('diff_avg_stint_length');
+                    const playerNameIdx = columns.indexOf('player_name');
+
+                    const labels = data.map(row => row[playerNameIdx]);
+                    const gamesPlayed = data.map(row => row[gamesIdx]);
+                    const stintDiff = data.map(row => row[diffIdx]);
+
+                    const ctx = document.getElementById('stintChart').getContext('2d');
+
+                    if (window.stintChart && typeof window.stintChart.destroy === 'function') {
+                        window.stintChart.destroy();
+                    }
+
+                    const chartConfig = {
+                        type: 'scatter',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Players',
+                                data: gamesPlayed.map((gp, index) => {
+                                    return {
+                                        x: gp,
+                                        y: stintDiff[index]
+                                    };
+                                }),
+                                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Difference in Stint Length Between Wins and Losses'
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const playerName = labels[context.dataIndex];
+                                            const games = context.raw.x;
+                                            const diff = context.raw.y;
+                                            return `${playerName}: Games Played: ${games}, Stint Diff (W-L): ${diff}`;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Games Played',
+                                        font: {
+                                            weight: 'bold'
+                                        }
+                                    },
+                                    ticks: {
+                                        font: {
+                                            weight: 'bold'
+                                        }
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Difference in Avg Stint Length Between Wins and Losses (seconds)',
+                                        font: {
+                                            weight: 'bold'
+                                        }
+                                    },
+                                    ticks: {
+                                        font: {
+                                            weight: 'bold'
+                                        }
+                                    },
+                                    grid: {
+                                        color: (ctx) => {
+                                            return ctx.tick.value === 0 ? 'rgba(0, 0, 0, 1)' : 'rgba(0, 0, 0, 0.1)';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    window.stintChart = new Chart(ctx, chartConfig);
+                })
+                .catch(error => {
+                    console.error('Error fetching stint data:', error);
+                });
+        }
+
+        // Function to render schedule visualization
+        function renderScheduleCalendar(team) {
+            let apiUrl = '';
+            if (user === 'user_one') {
+                apiUrl = '/api/scout-schedule';
+            } else {
+                apiUrl = `/api/coach-schedule?team=${encodeURIComponent(team)}`;
+            }
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(responseData => {
+                    if (responseData.error) {
+                        alert(responseData.error);
+                        return;
+                    }
+
+                    const events = responseData.events;
+
+                    var calendarEl = document.getElementById('calendar');
+
+                    if (window.calendar instanceof FullCalendar.Calendar) {
+                        window.calendar.destroy();
+                    }
+
+                    const initialDate = events.length > 0 ? events[0].start : new Date().toISOString().split('T')[0];
+
+                    window.calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        initialDate: initialDate,
+                        events: events,
+                        eventDidMount: function(info) {
+                            const difficulty = info.event.extendedProps.difficulty;
+                            if (difficulty >= 10) {
+                                info.el.style.backgroundColor = 'red';
+                            } else if (difficulty >= 5) {
+                                info.el.style.backgroundColor = 'orange';
+                            } else {
+                                info.el.style.backgroundColor = 'green';
+                            }
+                        },
+                        eventClick: function(info) {
+                            const event = info.event;
+                            const details = `
+                                Game ID: ${event.extendedProps.game_id}\n
+                                Home Team: ${event.extendedProps.home_team}\n
+                                Away Team: ${event.extendedProps.away_team}\n
+                                Difficulty: ${event.extendedProps.difficulty}
+                            `;
+                            alert(details);
+                        }
+                    });
+
+                    window.calendar.render();
+                })
+                .catch(error => {
+                    console.error('Error fetching schedule data:', error);
+                });
+        }
+
+        // Event listeners for visualization buttons
+        document.getElementById('stintButton').addEventListener('click', () => {
+            document.getElementById('scheduleViz').style.display = 'none';
+            document.getElementById('stintViz').style.display = 'block';
+            const selectedTeam = user === 'user_two' ? document.getElementById('teamSelect').value : '';
+            renderStintChart(selectedTeam);
+        });
+
+        document.getElementById('scheduleButton').addEventListener('click', () => {
+            document.getElementById('stintViz').style.display = 'none';
+            document.getElementById('scheduleViz').style.display = 'block';
+            const selectedTeam = user === 'user_two' ? document.getElementById('teamSelect').value : '';
+            renderScheduleCalendar(selectedTeam);
+        });
+
+        // Event listener for team selection (only for user_two)
+        if (user === 'user_two') {
+            document.getElementById('teamSelect').addEventListener('change', () => {
+                const selectedTeam = document.getElementById('teamSelect').value;
+                renderStintChart(selectedTeam);
+                renderScheduleCalendar(selectedTeam);
+                // Update the welcome message with the selected team
+                document.querySelector('p').textContent = `{Assistant Coach of ${selectedTeam}}`;
+            });
+        }
+
+        // Automatically render the stint chart by default when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('stintViz').style.display = 'block';
+            if (user === 'user_two') {
+                const selectedTeam = document.getElementById('teamSelect').value;
+                renderStintChart(selectedTeam);
+            } else {
+                renderStintChart('');
+            }
+        });
+
+    </script>
+
+    <!-- Logout button -->
+    <form action="/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+</body>
+</html>

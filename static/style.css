@@ -1,0 +1,38 @@
+/* Make the stint visualization container larger */
+#stintViz {
+    width: 100%;
+    height: 600px; /* Increased height for visualization */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px; /* Adds some space above the container */
+}
+
+/* Adjust the canvas size for the stint chart */
+canvas {
+    max-width: 1000px; /* Increased maximum width */
+    width: 90%; /* Makes the canvas wider */
+    height: 500px; /* Sets a taller fixed height for better visibility */
+    margin: 0 auto;
+}
+
+/* Make the calendar container smaller */
+#scheduleViz {
+    width: 80%; /* Reduces the width of the calendar container */
+    height: 400px; /* Reduces the height of the calendar */
+    margin: 0 auto; /* Centers the calendar container */
+    margin-top: 20px; /* Adds some space above the container */
+}
+
+#calendar {
+    max-width: 100%; /* Ensures the calendar does not exceed the container's width */
+    height: 150%; /* Makes the calendar fill the container height */
+}
+
+#teamSelect {
+    margin-bottom: 20px;
+}
+
+h1 + p {
+    font-style: italic;
+}
