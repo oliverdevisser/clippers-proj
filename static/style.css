@@ -4,8 +4,8 @@
 /* General Styles for All Pages */
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #f5f5f5; /* Light gray background */
-    color: #333; /* Dark gray text color */
+    background-color: #f5f5f5; 
+    color: #333; 
     margin: 0;
     padding: 20px;
 }
@@ -13,7 +13,7 @@ body {
 /* Heading Styles */
 h1, h2, h3 {
     text-align: center;
-    color: #333; /* Dark gray for headings */
+    color: #333; 
     margin-top: 20px;
     margin-bottom: 20px;
 }
@@ -26,13 +26,13 @@ h1 {
 p {
     text-align: center;
     font-style: italic;
-    color: #555; /* Medium gray for text */
+    color: #555; 
 }
 
 /* General Button Styles */
 button {
-    background-color: #3498db; /* Light blue button color */
-    color: #fff; /* White text */
+    background-color: #3498db; 
+    color: #fff;
     border: none;
     padding: 12px 20px;
     margin: 10px;
@@ -43,7 +43,7 @@ button {
 }
 
 button:hover {
-    background-color: #2980b9; /* Darker blue on hover */
+    background-color: #2980b9;
 }
 
 /* Logout Button Specific Styles */
@@ -52,15 +52,15 @@ button:hover {
     text-align: left;
     max-width: 1000px;
     margin: 20px auto 0 auto;
-    clear: both; /* Ensure it appears below floated elements */
+    clear: both; 
 }
 
 .logout-container button {
-    background-color: #e74c3c; /* Red color for logout */
+    background-color: #e74c3c; 
 }
 
 .logout-container button:hover {
-    background-color: #c0392b; /* Darker red on hover */
+    background-color: #c0392b; 
 }
 
 /* Form Container and Styles */
@@ -71,21 +71,21 @@ form {
 
 form div {
     margin-bottom: 15px;
-    text-align: center; /* Center the form elements */
+    text-align: center; 
 }
 
 form label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
-    text-align: left; /* Keep labels left-aligned if desired */
+    text-align: left; 
     width: 80%;
     max-width: 300px;
     margin: 0 auto 5px auto;
 }
 
 form input[type="text"], form input[type="password"] {
-    width: 80%; /* Adjust width as needed */
+    width: 80%; 
     max-width: 300px;
     padding: 10px;
     margin: 5px auto;
@@ -98,7 +98,7 @@ form input[type="text"], form input[type="password"] {
 }
 
 form button {
-    width: 80%; /* Matches the width of input fields */
+    width: 80%; 
     max-width: 300px;
     padding: 12px 20px;
     margin: 20px auto;
@@ -111,33 +111,33 @@ form button {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px; /* Space between buttons */
+    gap: 20px; 
 }
 
 .button-container button {
     flex: 1;
     max-width: 300px;
-    white-space: nowrap; /* Prevent text wrapping */
+    white-space: nowrap; 
 }
 
 /* Calendar and Visualization Containers */
 #stintViz, #scheduleViz {
-    width: 90%; /* Makes the container wider */
-    max-width: 1200px; /* Sets a maximum width */
-    min-height: 600px; /* Set a minimum height instead of fixed height */
-    height: auto; /* Allow the container to adjust height based on content */
-    margin: 0 auto 40px auto; /* Adds space below the container */
-    margin-top: 20px; /* Adds space above the container */
-    background-color: #fff; /* White background for containers */
-    border-radius: 10px; /* Rounded corners */
-    padding: 20px; /* Adds padding inside the container */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+    width: 90%; 
+    max-width: 1200px; 
+    min-height: 600px; 
+    height: auto; 
+    margin: 0 auto 40px auto; 
+    margin-top: 20px;
+    background-color: #fff; 
+    border-radius: 10px;
+    padding: 20px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
 /* Calendar inside the container */
 #calendar {
-    width: 100%; /* Ensures the calendar fills the container's width */
-    color: #333; /* Dark text color */
+    width: 100%; 
+    color: #333; 
 }
 
 /* Team Select Dropdown */
@@ -147,24 +147,24 @@ form button {
     padding: 10px;
     width: 200px;
     border-radius: 4px;
-    background-color: #f5f5f5; /* Light background for dropdown */
-    color: #333; /* Dark text color */
-    border: 1px solid #ddd; /* Light gray border */
+    background-color: #f5f5f5; 
+    color: #333;
+    border: 1px solid #ddd; 
 }
 
 /* Chart Canvas */
 canvas {
     max-width: 100%;
     height: auto;
-    background-color: #fff; /* White background for the chart */
+    background-color: #fff; 
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for charts */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
 
 /* Additional Styling for Calendar Events */
 .fc-event {
-    font-size: 14px; /* Slightly smaller font for events */
-    padding: 5px; /* Padding inside event elements */
-    border-radius: 4px; /* Rounded corners for events */
-    color: #fff; /* White text color */
+    font-size: 14px;
+    padding: 5px; 
+    border-radius: 4px; 
+    color: #fff; 
 }

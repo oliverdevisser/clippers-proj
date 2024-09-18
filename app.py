@@ -8,21 +8,13 @@ from config import Config
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# Dummy user data with hashed passwords
+#dummy user data with hashed passwords
 users = {
-    'user_one': generate_password_hash('1'),
-    'user_two': generate_password_hash('2')
+    'user_one': generate_password_hash('password123'),
+    'user_two': generate_password_hash('123password')
 }
 
-# Database connection parameters from environment variables
-# DB_HOST = os.environ.get('DATABASE_HOST', 'db')
-# #DB_HOST = os.environ.get('DATABASE_HOST', 'localhost')
-
-# DB_PORT = os.environ.get('DATABASE_PORT', '5432')
-# DB_NAME = os.environ.get('DATABASE_NAME', 'lac_fullstack_dev')
-# DB_USER = os.environ.get('DATABASE_USER', 'postgres')
-# DB_PASSWORD = os.environ.get('DATABASE_PASSWORD', 'postgres')
-
+#get database url
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 if not DATABASE_URL:
@@ -34,19 +26,12 @@ if not DATABASE_URL:
     DATABASE_URL = f'postgresql://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}'
 
 
-# Function to get a database connection
+#get db connection
 def get_db_connection():
     conn = psycopg2.connect(DATABASE_URL)
-    # conn = psycopg2.connect(
-    #     host=DB_HOST,
-    #     port=DB_PORT,
-    #     database=DB_NAME,
-    #     user=DB_USER,
-    #     password=DB_PASSWORD
-    # )
     return conn
 
-# Function to run SQL file
+#run SQL files written in questions 1-4
 def run_sql_file(filename):
     conn = get_db_connection()
     cur = conn.cursor()
@@ -63,13 +48,11 @@ def run_sql_file(filename):
     cur.close()
     conn.close()
 
-# Function to check if the database is initialized
+#check if the db is initialized, so doesn't write into empty db
 def is_db_initialized():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        #cur.execute("SELECT COUNT(*) FROM team;")
-        #count = cur.fetchone()[0]
         cur.close()
         conn.close()
         return False#count > 0
@@ -77,7 +60,8 @@ def is_db_initialized():
         print(f"Error checking if DB is initialized: {e}")
         return False
 
-# Wait for the database to be ready
+
+#wait for db
 while True:
     try:
         if is_db_initialized():
@@ -96,24 +80,18 @@ while True:
         print(f"Error during initialization: {e}")
         time.sleep(5)
 
-# Run SQL scripts to create tables
-# run_sql_file('sql_scripts/01_create_tables.sql')
 
-# Load data if not already loaded
-# if not is_db_initialized():
-#     from scripts.transfer_json_to_db import load_data_to_db
-#     load_data_to_db()
-
-
-# Run the SQL files in the correct order
+#run sql sqcripts in the correct order
 def run_all_sql_files():
     run_sql_file('sql_scripts/03_basic_queries.sql')
     run_sql_file('sql_scripts/04_schedule_queries.sql')
     run_sql_file('sql_scripts/05_lineups_queries.sql')
 
-# Run all SQL files when initializing
+#added check for log
 print("Running SQL Files 03, 04, 05.")
 run_all_sql_files()
+
+
 
 # Login route
 @app.route('/login', methods=['GET', 'POST'])
@@ -133,11 +111,14 @@ def login():
         return render_template('login.html')
 
 
+
 # Logout route
 @app.route('/logout', methods=['POST'])
 def logout():
     session.pop('user', None)
     return redirect(url_for('login'))
+
+
 
 # Home route
 @app.route('/')
@@ -159,21 +140,20 @@ def home():
         return redirect(url_for('login'))
 
 
-# app.py
-
+# Stint visualization rout
 @app.route('/api/stint-data')
 def get_stint_data():
     if 'user' not in session:
         return jsonify({'error': 'Unauthorized'}), 401
 
-    team = request.args.get('team', None)  # Get the selected team from query parameters
+    team = request.args.get('team', None)  #get selected team
 
-    # Connect to PostgreSQL and fetch data from the database
+    #connect to psql and fetch data from the database
     conn = get_db_connection()
     cur = conn.cursor()
     
-    if team:
-        # Fetch players for the selected team only
+    if team: #for coach view
+        
         cur.execute("""
             SELECT player_name, team, games, avg_stints_per_game, avg_stint_length_seconds, 
                    games_won, avg_stints_wins, avg_stint_length_wins, 
@@ -184,7 +164,7 @@ def get_stint_data():
             ORDER BY player_name;
         """, (team,))
     else:
-        # Fetch all players
+        #fetch all players for scout view
         cur.execute("""
             SELECT player_name, team, games, avg_stints_per_game, avg_stint_length_seconds, 
                    games_won, avg_stints_wins, avg_stint_length_wins, 
@@ -201,24 +181,15 @@ def get_stint_data():
     conn.close()
     return jsonify({'data': data, 'columns': column_names})
 
-
-
-
-
-
-
-# app.py
-
-# app.py
-
+# schedule visualization for scout route
 @app.route('/api/scout-schedule')
 def get_scout_schedule():
     try:
-        # Connect to PostgreSQL and fetch data
+        #connect to psql and fetch data from the database
         conn = get_db_connection()
         cur = conn.cursor()
 
-        # Calculate team records from game_schedule
+        # calculate team records from game_schedule
         cur.execute("""
             WITH team_records AS (
                 SELECT team_id, team_nickname, SUM(wins) AS total_wins, SUM(losses) AS total_losses
@@ -261,10 +232,9 @@ def get_scout_schedule():
 
         data = cur.fetchall()
         events = []
-        for row in data:
+
+        for row in data: #get background event color
             game_id, game_date, home_team, away_team, difficulty = row
-            # Determine color based on difficulty
-            # Determine color based on difficulty
             for threshold, color in difficulty_levels:
                 if difficulty >= threshold:
                     event_color = color
@@ -272,7 +242,7 @@ def get_scout_schedule():
             else:
                 event_color = '#006400'  # Default color
 
-            event = {
+            event = { #create event and return 
                 'title': f"{home_team} vs {away_team} (Diff: {difficulty})",
                 'start': game_date.isoformat(),
                 'allDay': True,
@@ -292,20 +262,20 @@ def get_scout_schedule():
         return jsonify({'error': str(e)}), 500
 
 
-
+# schedule visualization for coach route
 @app.route('/api/coach-schedule')
 def get_coach_schedule():
     if 'user' not in session or session['user'] != 'user_two':
         return jsonify({'error': 'Unauthorized'}), 401
 
-    team_name = request.args.get('team', 'LA Clippers')  # Default to LA Clippers
+    team_name = request.args.get('team', 'LA Clippers')  #defaults to clippers
 
     try:
-        # Connect to PostgreSQL and fetch data
+        #connect to psql and fetch data from the database
         conn = get_db_connection()
         cur = conn.cursor()
 
-        # Calculate team records from game_schedule
+        # calculate team records from game_schedule
         cur.execute("""
             WITH team_records AS (
                 SELECT 
@@ -365,10 +335,9 @@ def get_coach_schedule():
         ]
 
         events = []
-        for row in data:
+        for row in data: #get background event color
             game_id, game_date, home_team, away_team, difficulty = row
 
-            # Determine color based on difficulty
             for threshold, color in difficulty_levels:
                 if difficulty >= threshold:
                     event_color = color
@@ -376,7 +345,7 @@ def get_coach_schedule():
             else:
                 event_color = '#006400'  # Default color
 
-            event = {
+            event = { #create event and return
                 'title': f"{home_team} vs {away_team} (Diff: {difficulty})",
                 'start': game_date.isoformat(),
                 'allDay': True,
@@ -396,6 +365,6 @@ def get_coach_schedule():
         return jsonify({'error': str(e)}), 500
 
 
-
+#app.py
 if __name__ == '__main__':
     app.run(debug=True)

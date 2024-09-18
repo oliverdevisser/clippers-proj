@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS lineup (
     time_in INTEGER,
     time_out INTEGER,
     game_id BIGINT,
-    PRIMARY KEY (team_id, player_id, lineup_num, period, game_id)
+    PRIMARY KEY (team_id, player_id, lineup_num, game_id)
 );
 -- Create table 'roster'
 CREATE TABLE IF NOT EXISTS roster (

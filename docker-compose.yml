@@ -5,7 +5,6 @@ services:
   web:
     build: .
     command: ["flask", "run", "--host=0.0.0.0"]
-    # Comment out or remove the volumes section
     volumes:
       - .:/app   # Mount the entire project directory
       - ./dev_test_data:/dev_test_data  # Map dev_test_data directly to /dev_test_data in the container

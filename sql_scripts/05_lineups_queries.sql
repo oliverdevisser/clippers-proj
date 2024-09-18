@@ -1,3 +1,4 @@
+--- a -----
 WITH lineup_wide AS (
     SELECT l.game_id,
         l.team_id,
@@ -71,7 +72,11 @@ ORDER BY game_id,
     team_id,
     lineup_num,
     period;
---- b
+
+
+
+
+--- b -----
 DROP TABLE IF EXISTS temp_stint_accumulation;
 CREATE TEMP TABLE temp_stint_accumulation AS WITH player_stints AS (
     SELECT gs.game_date,
@@ -139,12 +144,10 @@ SELECT game_date,
         ORDER BY time_in DESC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
     ) + 1 AS stint_number
 FROM stint_lagged;
--- Section 4.b: Create stints_results table (modified to include game_id)
-DROP TABLE IF EXISTS stints_results;
+DROP TABLE IF EXISTS stints_results; 
 CREATE TABLE stints_results AS
 SELECT game_date,
     game_id,
-    -- Include game_id
     team,
     opponent,
     player_name,
@@ -155,7 +158,6 @@ SELECT game_date,
 FROM temp_stint_accumulation
 GROUP BY game_date,
     game_id,
-    -- Add game_id to GROUP BY
     team,
     opponent,
     player_name,
@@ -166,21 +168,19 @@ ORDER BY game_date,
     player_name,
     period,
     stint_number;
--- Adjust temp_stint_durations to include game_id
 DROP TABLE IF EXISTS temp_stint_durations;
 CREATE TEMP TABLE temp_stint_durations AS
 SELECT sr.*,
     ABS(MIN(tsa.time_in) - MAX(tsa.time_out)) AS stint_seconds
 FROM stints_results sr
     JOIN temp_stint_accumulation tsa ON sr.game_date = tsa.game_date
-    AND sr.game_id = tsa.game_id -- Include game_id in JOIN
+    AND sr.game_id = tsa.game_id 
     AND sr.team = tsa.team
     AND sr.player_name = tsa.player_name
     AND sr.period = tsa.period
     AND sr.stint_number = tsa.stint_number
 GROUP BY sr.game_date,
     sr.game_id,
-    -- Add game_id to GROUP BY
     sr.team,
     sr.opponent,
     sr.player_name,
@@ -188,7 +188,9 @@ GROUP BY sr.game_date,
     sr.stint_number,
     sr.stint_start_time,
     sr.stint_end_time;
--- Section 4.c: Calculate average number of stints and average stint length per player per game
+
+
+----- c -------
 SELECT player_name,
     team,
     ROUND(COUNT(*)::NUMERIC / COUNT(DISTINCT game_date), 2) AS average_stints_per_game,
@@ -200,7 +202,9 @@ ORDER BY team,
     avg_stint_length_seconds DESC,
     average_stints_per_game DESC
 LIMIT 1000;
--- Section 4.d: Extend the query to include wins, losses, and differences
+
+
+----- d --------
 DROP TABLE IF EXISTS final_summary;
 CREATE TABLE final_summary AS WITH game_results AS (
     SELECT gs.game_id,
@@ -235,7 +239,6 @@ stint_durations_with_results AS (
 SELECT player_name,
     team,
     COUNT(DISTINCT game_date) AS games,
-    -- Average stints per game
     ROUND(
         COUNT(*)::NUMERIC / NULLIF(COUNT(DISTINCT game_date), 0),
         2
