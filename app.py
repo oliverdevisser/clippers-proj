@@ -15,23 +15,26 @@ users = {
 }
 
 # Database connection parameters from environment variables
-DB_HOST = os.environ.get('DATABASE_HOST', 'db')
-#DB_HOST = os.environ.get('DATABASE_HOST', 'localhost')
+# DB_HOST = os.environ.get('DATABASE_HOST', 'db')
+# #DB_HOST = os.environ.get('DATABASE_HOST', 'localhost')
 
-DB_PORT = os.environ.get('DATABASE_PORT', '5432')
-DB_NAME = os.environ.get('DATABASE_NAME', 'lac_fullstack_dev')
-DB_USER = os.environ.get('DATABASE_USER', 'postgres')
-DB_PASSWORD = os.environ.get('DATABASE_PASSWORD', 'postgres')
+# DB_PORT = os.environ.get('DATABASE_PORT', '5432')
+# DB_NAME = os.environ.get('DATABASE_NAME', 'lac_fullstack_dev')
+# DB_USER = os.environ.get('DATABASE_USER', 'postgres')
+# DB_PASSWORD = os.environ.get('DATABASE_PASSWORD', 'postgres')
+
+DATABASE_URL = os.environ.get('DATABASE_URL')
 
 # Function to get a database connection
 def get_db_connection():
-    conn = psycopg2.connect(
-        host=DB_HOST,
-        port=DB_PORT,
-        database=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD
-    )
+    conn = psycopg2.connect(DATABASE_URL)
+    # conn = psycopg2.connect(
+    #     host=DB_HOST,
+    #     port=DB_PORT,
+    #     database=DB_NAME,
+    #     user=DB_USER,
+    #     password=DB_PASSWORD
+    # )
     return conn
 
 # Function to run SQL file

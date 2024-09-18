@@ -4,7 +4,7 @@ from sqlalchemy import create_engine, text  # Import text here
 from sqlalchemy.types import BigInteger, Integer, String, TIMESTAMP
 
 def load_data_to_db():
-    DATABASE_URI = os.environ.get('DATABASE_URI', 'postgresql://postgres:postgres@db:5432/lac_fullstack_dev')
+    DATABASE_URI = os.environ.get('DATABASE_URL', 'postgresql://postgres:postgres@db:5432/lac_fullstack_dev')
     engine = create_engine(DATABASE_URI)
 
     DATA_DIR = '/dev_test_data'  # Path inside Docker container
