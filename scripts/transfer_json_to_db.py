@@ -1,13 +1,14 @@
 import os
 import pandas as pd
-from sqlalchemy import create_engine, text  # Import text here
+from sqlalchemy import create_engine, text
 from sqlalchemy.types import BigInteger, Integer, String, TIMESTAMP
 
 def load_data_to_db():
     DATABASE_URI = os.environ.get('DATABASE_URL', 'postgresql://postgres:postgres@db:5432/lac_fullstack_dev')
     engine = create_engine(DATABASE_URI)
 
-    DATA_DIR = '/dev_test_data'  # Path inside Docker container
+    # Correct the DATA_DIR path
+    DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'dev_test_data')
 
     # Map JSON files to table names
     file_to_table = {
@@ -19,7 +20,7 @@ def load_data_to_db():
         'roster.json': 'roster'
     }
 
-    # Define data types for each table
+    # Define data types for each table (unchanged)
     dtype_mapping = {
         'team': {
             'teamid': BigInteger(),
@@ -70,7 +71,7 @@ def load_data_to_db():
     for file_name, table_name in file_to_table.items():
         file_path = os.path.join(DATA_DIR, file_name)
         try:
-            print(f"Processing {file_name}...")
+            print(f"Processing {file_name} at {file_path}...")
             # Read JSON into DataFrame
             df = pd.read_json(file_path)
             # Convert column names to lowercase
@@ -83,7 +84,6 @@ def load_data_to_db():
             # Delete existing data
             with engine.connect() as connection:
                 connection.execute(text(f"TRUNCATE TABLE {table_name} RESTART IDENTITY CASCADE;"))
-                # Note: Wrap the SQL string with text()
 
             # Write DataFrame to table
             df.to_sql(table_name, con=engine, if_exists='append', index=False, dtype=dtype_mapping.get(table_name))
@@ -93,3 +93,6 @@ def load_data_to_db():
 
 if __name__ == '__main__':
     load_data_to_db()
+
+
+
