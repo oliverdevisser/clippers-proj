@@ -54,38 +54,38 @@ Before you begin, make sure you have the following installed on your machine:
 
 Here is an overview of the files and directories in this project:
 
-"""
-LAC_FSD_ODV/
-├── __pycache__/          # Python bytecode cache (ignored in Docker)
-├── clean_env/            # Clean virtual environment (optional, not used directly in Docker)
-├── dev_test_data/        # Sample JSON data to seed the database
-│   ├── game_schedule.json
-│   ├── lineup.json
-│   ├── player.json
-│   ├── roster.json
-│   ├── team_affiliate.json
-│   └── team.json
-├── scripts/              # Python scripts
-│   └── transfer_json_to_db.py     # Script to transfer JSON data to the database
-├── sql_scripts/          # SQL scripts to initialize and query the database
-│   ├── 01_create_tables.sql
-│   ├── 03_basic_queries.sql
-│   ├── 04_schedule_queries.sql
-│   └── 05_lineups_queries.sql
-├── static/               # Static assets such as CSS
-│   └── style.css
-├── templates/            # HTML templates for the web app
-│   ├── index.html
-│   └── login.html
-├── .dockerignore         # Files and directories to ignore in Docker builds
-├── .gitignore            # Files to ignore in git commits
-├── app.py                # The Flask application
-├── config.py             # Configuration settings (read NOTE in this file for information about keys)
-├── docker-compose.yml    # Docker Compose file for managing services
-├── Dockerfile            # Dockerfile to build the Flask web app image
-├── README.md             # Project documentation (this file)
-└── requirements.txt      # Python dependencies for the Flask app
-"""
+ ```bash
+  LAC_FSD_ODV/
+  ├── __pycache__/          # Python bytecode cache (ignored in Docker)
+  ├── clean_env/            # Clean virtual environment (optional, not used directly in Docker)
+  ├── dev_test_data/        # Sample JSON data to seed the database
+  │   ├── game_schedule.json
+  │   ├── lineup.json
+  │   ├── player.json
+  │   ├── roster.json
+  │   ├── team_affiliate.json
+  │   └── team.json
+  ├── scripts/              # Python scripts
+  │   └── transfer_json_to_db.py     # Script to transfer JSON data to the database
+  ├── sql_scripts/          # SQL scripts to initialize and query the database
+  │   ├── 01_create_tables.sql
+  │   ├── 03_basic_queries.sql
+  │   ├── 04_schedule_queries.sql
+  │   └── 05_lineups_queries.sql
+  ├── static/               # Static assets such as CSS
+  │   └── style.css
+  ├── templates/            # HTML templates for the web app
+  │   ├── index.html
+  │   └── login.html
+  ├── .dockerignore         # Files and directories to ignore in Docker builds
+  ├── .gitignore            # Files to ignore in git commits
+  ├── app.py                # The Flask application
+  ├── config.py             # Configuration settings (read NOTE in this file for information about keys)
+  ├── docker-compose.yml    # Docker Compose file for managing services
+  ├── Dockerfile            # Dockerfile to build the Flask web app image
+  ├── README.md             # Project documentation (this file)
+  └── requirements.txt      # Python dependencies for the Flask app
+```
 
 ## Installation
 Follow these steps to get the project up and running:
