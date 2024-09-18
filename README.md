@@ -1,24 +1,55 @@
-Questions 1-4:
-Question 1 is written in /scripts/transfer_json_to_db.py, question 2 is in /sql_scripts/03_basic_queries.sql, question 3 is in /sql_scripts/04_schedule_queries, and question 4 is in /sql_scripts/05_lineups_queries. Connect to db and run these scripts to see outputs
-
-Question 5: LAC_FSD_ODV Web Application
+# LAC_FSD_ODV Web Application
 
 This project is a web application built with Flask and uses PostgreSQL as its database. The entire application is containerized using Docker to make the setup and deployment straightforward and easy. This guide will walk you through setting up and running the application on your local machine within a Docker container.
 
-Table of Contents
-Prerequisites
-Project Structure
-Installation
-Running the Application
-Database Initialization
-Stopping the Application
-Troubleshooting
+---
 
-Prerequisites
+## Table of Contents
+
+- [Questions 1-4](#questions-1-4)
+- [Question 5: Web Application](#question-5-web-application)
+- [Prerequisites](#prerequisites)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Running the Application](#running-the-application)
+- [Stopping the Application](#stopping-the-application)
+- [Troubleshooting](#troubleshooting)
+- [Additional Notes](#additional-notes)
+- [Login Credentials](#login-credentials)
+- [Conclusion](#conclusion)
+
+---
+
+## Questions 1-4
+
+- **Question 1:** Written in `/scripts/transfer_json_to_db.py`
+- **Question 2:** Written in `/sql_scripts/03_basic_queries.sql`
+- **Question 3:** Written in `/sql_scripts/04_schedule_queries.sql`
+- **Question 4:** Written in `/sql_scripts/05_lineups_queries.sql`
+
+To see the outputs for these questions:
+1. Connect to the PostgreSQL database.
+2. Run the respective SQL scripts located in the `/sql_scripts` directory.
+
+---
+
+## Question 5: Web Application
+
+The web application addresses Question 5, providing visualizations and user interactions as specified.
+
+---
+
+## Prerequisites
+
 Before you begin, make sure you have the following installed on your machine:
 
-Docker: You can install Docker from the official Docker website.
-Docker Compose: Docker Compose is typically bundled with Docker Desktop. Verify its installation by running docker-compose --version.
+- **Docker:** You can install Docker from the [official Docker website](https://www.docker.com/get-started).
+- **Docker Compose:** Docker Compose is typically bundled with Docker Desktop. Verify its installation by running:
+
+  ```bash
+  docker-compose --version
+
+
 Project Structure
 Here is an overview of the files and directories in this project:
 
