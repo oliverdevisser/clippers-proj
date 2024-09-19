@@ -28,8 +28,13 @@ This project is a web application built with Flask and uses PostgreSQL as its da
 - **Question 4:** Written in `/sql_scripts/05_lineups_queries.sql`
 
 To see the outputs for these questions:
-1. Connect to the PostgreSQL database.
-2. Run the respective SQL scripts located in the `/sql_scripts` directory.
+1. Load the app as below
+2. Go to PostgreSQL db in Docker (lac_fsd_odv-db-1)
+3. Go to Exec, run `psql -U postgres -d lac_fullstack_dev` to connect to db
+4. Can check answers as below, use `\dt` to see all tables
+question 2: `SELECT * FROM basic_queries;`
+question 3: did not save tables, copy from `/sql_scripts/04_schedule_queries.sql` and run to see tables
+question 4: a - `SELECT * FROM wide_table;` b - `SELECT * FROM stints_results;` c - `SELECT * FROM stints_results_averages;` d - `SELECT * FROM final_summary;`
 
 ---
 
@@ -121,7 +126,7 @@ This will start two containers:
 web: The Flask web application container.
 db: The PostgreSQL database container.
 ```
-If everything is set up correctly, the web app will be available on http://localhost:5001 (or http://localhost:5000 todo check).
+If everything is set up correctly, the web app will be available on http://localhost:5001 (if not try http://localhost:5000).
 
 ### 2. Open the Web Application
    Open your web browser and go to:
@@ -143,12 +148,6 @@ This will stop and remove the containers but keep the database volume intact.
 
 ## Troubleshooting
 Here are some common issues you might encounter and how to resolve them:
-
-### Starting container
-If the above commands aren't working, try the following instead (:
-```
-docker compose up -d
-```
 
 ### Database connection errors: 
 Ensure that the PostgreSQL database is running properly. You can check the logs with:
