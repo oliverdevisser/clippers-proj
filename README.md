@@ -194,4 +194,4 @@ I just used `SECRET_KEY` for ease of setup and testing purposes. In a real-world
 ## Conclusion
 You now have the LAC_FSD_ODV web app running in Docker containers with a PostgreSQL database. Follow the steps outlined above to build, run, and troubleshoot the application.
 
-If you encounter any issues or have questions, feel free to check the logs (docker-compose logs) or reach out for further assistance (olliedevisser@gmail.com or (650)996-2776).
+If you encounter any issues or have questions, feel free to check the logs (docker-compose logs) or reach out for further assistance (olliedevisser@gmail.com ).
